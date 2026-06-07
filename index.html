@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>심홍승 | 자기소개</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Square:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #ffffff;
+      color: #111111;
+      font-family: 'Nanum Square', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 24px;
+    }
+
+    .container {
+      max-width: 840px;
+      width: 100%;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      margin-bottom: 48px;
+    }
+
+    .name-wrap {
+      display: inline-block;
+    }
+
+    .name {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 76px;
+      line-height: 1;
+      color: #111111;
+      letter-spacing: -2px;
+    }
+
+    .name-underline {
+      height: 7px;
+      background: #FACC15;
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    .tagline {
+      font-size: 17px;
+      font-weight: 400;
+      color: #555555;
+      margin-top: 24px;
+      line-height: 1.7;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 36px;
+      height: 3px;
+      background: #2563EB;
+      margin: 44px 0;
+    }
+
+    /* ── Role Cards ── */
+    .cards {
+      display: flex;
+      gap: 20px;
+    }
+
+    .card {
+      flex: 1;
+      border-left: 4px solid #2563EB;
+      padding: 24px 20px;
+      background: #ffffff;
+    }
+
+    .card-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 15px;
+      color: #2563EB;
+      margin-bottom: 10px;
+      letter-spacing: 0;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      font-weight: 400;
+      color: #666666;
+      line-height: 1.75;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #FACC15;
+      color: #111111;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      margin-top: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .name { font-size: 52px; }
+      .cards { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="hero">
+      <div class="name-wrap">
+        <div class="name">심홍승</div>
+        <div class="name-underline"></div>
+      </div>
+      <p class="tagline">병원을 브랜딩하고, 영상으로 이야기하고, 캐릭터로 감정을 표현합니다.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">종합병원 홍보담당자</div>
+        <p class="card-desc">병원 브랜딩 전략 수립 및 실행. 의료 기관의 가치를 대중에게 효과적으로 전달합니다.</p>
+        <span class="tag">PR &amp; Branding</span>
+      </div>
+      <div class="card">
+        <div class="card-title">콘텐츠 크리에이터</div>
+        <p class="card-desc">유튜브·인스타그램에서 미스터리·뇌과학 기반의 2D·3D 애니메이션 콘텐츠를 제작합니다.</p>
+        <span class="tag">Animation</span>
+      </div>
+      <div class="card">
+        <div class="card-title">캐릭터 이모티콘 작가</div>
+        <p class="card-desc">카카오 등 플랫폼을 위한 오리지널 캐릭터 이모티콘을 창작합니다.</p>
+        <span class="tag">Kakao &amp; More</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
