@@ -2,3 +2,7 @@
 .claude/
 .vercel
 .env*
+
+# Supabase (CLI 임시/로컬 파일 — GitHub에 올리지 않음)
+supabase/.temp
+supabase/.branches

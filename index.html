@@ -551,6 +551,64 @@
       .contact { padding: 100px 24px; }
       footer { padding: 36px 24px; flex-direction: column; }
     }
+    /* ── CONTACT FORM ── */
+    .contact-form {
+      width: 100%;
+      max-width: 460px;
+      margin: 12px auto 0;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .contact-form .field { display: flex; flex-direction: column; gap: 8px; }
+    .contact-form label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray2);
+      letter-spacing: -0.01em;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      font-family: var(--font);
+      font-size: 16px;
+      color: var(--black);
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: #b0b0b5; }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+    }
+    .contact-form textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+    .contact-submit {
+      justify-content: center;
+      margin-top: 4px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+    .contact-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .contact-status {
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      min-height: 20px;
+      margin-top: 2px;
+      letter-spacing: -0.01em;
+      color: var(--gray2);
+    }
+    .contact-status.success { color: #1a7f37; }
+    .contact-status.error   { color: #d1242f; }
   </style>
 </head>
 <body>
@@ -739,17 +797,28 @@
     <p class="contact-sub r d2">
       병원 홍보, 영상 제작, 캐릭터 협업 등<br>모든 문의를 환영합니다.
     </p>
-    <span class="contact-email-link r d3">
-      추후공지
-    </span>
-    <div class="contact-rule"></div>
-    <span class="btn r d4">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="2"/>
-        <path d="M22 6l-10 7L2 6"/>
-      </svg>
-      문의 방법 추후 공지
-    </span>
+    <form class="contact-form r d3" id="contact-form" novalidate>
+      <div class="field">
+        <label for="cf-name">이름</label>
+        <input type="text" id="cf-name" name="name" placeholder="홍길동" maxlength="200" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="cf-email">이메일</label>
+        <input type="email" id="cf-email" name="email" placeholder="you@example.com" maxlength="320" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="cf-message">문의 내용</label>
+        <textarea id="cf-message" name="message" placeholder="어떤 이야기든 편하게 남겨주세요." maxlength="5000" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="btn contact-submit" id="cf-submit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M22 6l-10 7L2 6"/>
+        </svg>
+        문의 보내기
+      </button>
+      <p class="contact-status" id="cf-status" role="status" aria-live="polite"></p>
+    </form>
   </section>
 
   <!-- ── FOOTER ── -->
@@ -771,6 +840,55 @@
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
     }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
     reveals.forEach(el => io.observe(el));
+
+    // ── Contact form → Supabase ──
+    // 아래 두 값은 "공개용"이라 브라우저에 노출돼도 안전합니다.
+    // (DB 접근은 서버의 보안 규칙(RLS)으로 통제됩니다.)
+    const SUPABASE_URL = 'https://jwhqrkvvywoilwuwapfq.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_GhP6D-zbLtTt01a3v9G-jA_SckoiFqk';
+
+    const contactForm = document.getElementById('contact-form');
+    const cfStatus = document.getElementById('cf-status');
+    const cfSubmit = document.getElementById('cf-submit');
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('cf-name').value.trim();
+      const email = document.getElementById('cf-email').value.trim();
+      const message = document.getElementById('cf-message').value.trim();
+
+      cfStatus.className = 'contact-status';
+      if (!name || !email || !message) {
+        cfStatus.textContent = '모든 항목을 입력해 주세요.';
+        cfStatus.classList.add('error');
+        return;
+      }
+
+      cfSubmit.disabled = true;
+      cfStatus.textContent = '보내는 중…';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/contacts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ name, email, message })
+        });
+        if (!res.ok) throw new Error('request failed: ' + res.status);
+        contactForm.reset();
+        cfStatus.className = 'contact-status success';
+        cfStatus.textContent = '문의가 정상적으로 접수되었습니다. 감사합니다!';
+      } catch (err) {
+        cfStatus.className = 'contact-status error';
+        cfStatus.textContent = '전송에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+      } finally {
+        cfSubmit.disabled = false;
+      }
+    });
   </script>
 
 </body>
